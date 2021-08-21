@@ -9,3 +9,5 @@ Gitignore will remove
 файлы с расширением .tfstate, .tfvars
 файлы crash.log, override.tf, override.tf.json, .terrafrom, terraform.rc
 файлы, у которых название заканчивается на _override.tf и _override.tf.json
+
+testing new branch
