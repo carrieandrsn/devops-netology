@@ -27,4 +27,4 @@ while 1 == 1:
         get_ip(i)
     first_start = False
     print()
-    time.sleep(60)
+    time.sleep(10)
