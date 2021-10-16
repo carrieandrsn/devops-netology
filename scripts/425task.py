@@ -34,3 +34,11 @@ add_branch_body = {"ref": ref, "sha": sha}
 
 # actually add a branch
 requests.post(add_branch_url, json=add_branch_body, headers=headers)
+
+# adding file to commit. Couldn't find how else to mute the output
+git_add_check = os.popen(git add *).read()
+
+# committing to newly added branch
+
+command = 'git commit -m ' + "'" + message + "'"
+git_commit_check = os.popen(command).read()
