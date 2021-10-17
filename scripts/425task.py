@@ -5,7 +5,7 @@ import sys
 import requests
 
 username = 'carriesqrl'
-git_key = ''
+git_key = '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'
 repo = 'devops-netology'
 message = sys.argv[1]
 current_user = os.popen('whoami').read().strip()
@@ -26,31 +26,7 @@ else:
 
 print('Adding a new branch.. Name: ' + branch_name + '\n')
 
-# get a list of heads in repo
-url = 'https://api.github.com/repos/' + username + '/' + repo + '/git/refs/heads'
-ref_list = requests.get(url, headers=headers).json()
-
-# get sha of main branch on which we base the newest one
-sha = ref_list[-1]['object']['sha']
-
-# prepare data for add request
-url = 'https://api.github.com/repos/' + username + '/' + repo + '/git/refs'
-ref = "refs/heads/" + branch_name
-body = {"ref": ref, "sha": sha}
-
-# actually add a branch
-status = requests.post(url, json=body, headers=headers)
-if status.status_code == 201:
-    print('Branch has been added \n')
-else:
-    print('Branch creation failed')
-    exit()
-
-command = 'git pull -q origin ' + branch_name
-result = os.popen(command).read()
-
-# select newly created branch
-command = 'git checkout ' + branch_name
+command = 'git switch -c ' + branch_name
 result = os.popen(command).read()
 
 # adding file to commit. Couldn't find how else to mute the output
@@ -60,7 +36,7 @@ result = os.popen('git add *').read()
 command = 'git commit -m ' + "'" + message + "'"
 result = os.popen(command).read()
 
-command = 'git push origin ' + branch_name
+command = 'git push origin' + branch_name
 result = os.popen(command).read()
 
 # creating pull request
