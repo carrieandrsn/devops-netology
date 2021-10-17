@@ -3,7 +3,7 @@
 import socket
 import time
 import json
-import ruamel.yaml
+import yaml
 
 service_list = ['drive.google.com', 'mail.google.com', 'google.com']
 last_check_result = {}
@@ -24,20 +24,19 @@ def check_ip(service, ip):
         print('[ERROR] ' + service + ' IP mismatch: ' + old_ip + ' ' + ip)
 
 
-def create_json_yaml():
+def json_yaml_file():
     out_file = open("services.json", "w")
     json.dump(last_check_result, out_file)
     out_file.close()
     out_file = open("services.yaml", "w")
-    ruamel.yaml.dump(last_check_result, Dumper=ruamel.yaml.RoundTripDumper)
+    yaml.dump(last_check_result, out_file)
     out_file.close()
 
 
 while 1 == 1:
     for i in service_list:
         get_ip(i)
-    if first_start:
-        create_json_yaml()
+    json_yaml_file()
     first_start = False
     print()
     time.sleep(10)
