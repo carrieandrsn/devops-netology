@@ -5,7 +5,7 @@ import sys
 import requests
 
 username = 'carriesqrl'
-git_key = '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'
+git_key = ''
 repo = 'devops-netology'
 message = sys.argv[1]
 current_user = os.popen('whoami').read().strip()
@@ -13,32 +13,63 @@ current_date = os.popen("date +'%Y-%m-%d'").read().strip()
 branch_name = current_user + '-' + current_date
 headers = {'Authorization': "Token " + git_key}
 
-os.chdir(os.path.expanduser('~/devops-netology'))
+command = '~/' + repo
+os.chdir(os.path.expanduser(command))
 
 print('Checking user auth.. \n')
-login = requests.get('https://api.github.com', auth=(username, git_key))
+status = requests.get('https://api.github.com', auth=(username, git_key))
+if status.status_code == 200:
+    print('Auth successful.. \n')
+else:
+    print('Auth failed. Please check credentials.')
+    exit()
 
-print('Adding a new branch.. Name: ' + branch_name)
+print('Adding a new branch.. Name: ' + branch_name + '\n')
 
 # get a list of heads in repo
-sha_get_url = 'https://api.github.com/repos/' + username + '/' + repo + '/git/refs/heads'
-ref_list = requests.get(sha_get_url, headers=headers).json()
+url = 'https://api.github.com/repos/' + username + '/' + repo + '/git/refs/heads'
+ref_list = requests.get(url, headers=headers).json()
 
 # get sha of main branch on which we base the newest one
 sha = ref_list[-1]['object']['sha']
 
 # prepare data for add request
-add_branch_url = 'https://api.github.com/repos/' + username + '/' + repo + '/git/refs'
+url = 'https://api.github.com/repos/' + username + '/' + repo + '/git/refs'
 ref = "refs/heads/" + branch_name
-add_branch_body = {"ref": ref, "sha": sha}
+body = {"ref": ref, "sha": sha}
 
 # actually add a branch
-requests.post(add_branch_url, json=add_branch_body, headers=headers)
+status = requests.post(url, json=body, headers=headers)
+if status.status_code == 201:
+    print('Branch has been added \n')
+else:
+    print('Branch creation failed')
+    exit()
+
+command = 'git pull ' + branch_name
+result = os.popen(command).read()
+
+# select newly created branch
+command = 'git checkout ' + branch_name
+result = os.popen(command).read()
 
 # adding file to commit. Couldn't find how else to mute the output
-git_add_check = os.popen(git add *).read()
+result = os.popen('git add *').read()
 
 # committing to newly added branch
-
 command = 'git commit -m ' + "'" + message + "'"
-git_commit_check = os.popen(command).read()
+result = os.popen(command).read()
+
+command = 'git push origin' + branch_name
+result = os.popen(command).read()
+
+# creating pull request
+url = 'https://api.github.com/repos/carrieandrsn/' + repo + '/pulls'
+pr_branch = username + ':' + branch_name
+body = {"head": pr_branch, "base": "main", "title": message}
+status = requests.post(url, json=body, headers=headers)
+if status.status_code == 201:
+    print('Pull request created \n')
+else:
+    print('Pull request failed')
+    exit()
