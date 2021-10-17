@@ -5,7 +5,7 @@ import sys
 import requests
 
 username = 'carriesqrl'
-git_key = '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'
+git_key = 'ghp_BIQQrB8fKoO9RvE'
 repo = 'devops-netology'
 message = sys.argv[1]
 current_user = os.popen('whoami').read().strip()
@@ -36,7 +36,7 @@ result = os.popen('git add *').read()
 command = 'git commit -m ' + "'" + message + "'"
 result = os.popen(command).read()
 
-command = 'git push origin' + branch_name
+command = 'git push origin ' + branch_name
 result = os.popen(command).read()
 
 # creating pull request
