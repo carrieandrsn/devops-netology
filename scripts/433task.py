@@ -4,7 +4,6 @@ import sys
 import re
 import json
 import yaml
-import ast
 
 file_name = sys.argv[1]
 
@@ -48,22 +47,19 @@ def yaml_syntax_check(file_name):
 
 def json2yaml(file_name):
     new_name = file_name.replace(".json", ".yml")
-    in_file = open(file_name, "r")
-    text = ast.literal_eval(in_file.read())
-    in_file.close()
-    out_file = open(new_name, "w+")
-    yaml.dump(text, out_file)
-    out_file.close()
+    with open(file_name, "r") as in_file:
+        content = json.load(in_file)
+    with open(new_name, "w") as out_file:
+        out_file.write(yaml.dump(content))
     print("Saved file " + new_name)
+
 
 def yaml2json(file_name):
     new_name = file_name.replace(".yml", ".json").replace(".yaml", ".json")
-    in_file = open(file_name, "r")
-    text = yaml.safe_load(in_file)
-    in_file.close()
-    out_file = open(new_name, "w+")
-    json.dump(text, out_file)
-    out_file.close()
+    with open(file_name, "r") as in_file:
+        content = yaml.safe_load(in_file)
+    with open(new_name, "w") as out_file:
+        out_file.write(json.dumps(content))
     print("Saved file " + new_name)
 
 
