@@ -9,7 +9,8 @@ file_name = sys.argv[1]
 
 # this function will check file extensions based on first symbol
 # and will change is_json flag from initially assigned values
-def check_file_type(file_name, is_json):
+def check_file_type(file_name):
+    global is_json
     file = open(file_name, "r")
     first_symbol = file.read(1)
     file.close()
@@ -74,7 +75,7 @@ else:
 
 # does it look like contents are correct
 print("Checking if file type matches contents \n")
-check_file_type(file_name, is_json)
+check_file_type(file_name)
 
 # assuming that we resolve the switch versions, time to check syntax
 print("Checking syntax \n")
